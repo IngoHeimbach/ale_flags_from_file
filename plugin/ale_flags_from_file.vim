@@ -7,29 +7,55 @@ let g:ale_flags_from_file = 1
 
 let s:flag_files = ['.color_coded']
 let s:filetype_to_variables = {
-    \   'c':   ['b:ale_c_clang_options'],
-    \   'cpp': ['b:ale_cpp_clang_options']
+    \   'c':   ['ale_c_clang_options', 'ale_c_cppcheck_options'],
+    \   'cpp': ['ale_cpp_clang_options', 'ale_cpp_cppcheck_options']
+    \ }
+let s:option_filter = {
+    \   'ale_c_cppcheck_options':   ['-D', '-I'],
+    \   'ale_cpp_cppcheck_options': ['-D', '-I']
     \ }
 
 function! s:load_flags()
-    if index(keys(s:filetype_to_variables), &ft) < 0 || exists(s:filetype_to_variables[&ft][0])
+    if index(keys(s:filetype_to_variables), &filetype) < 0 || exists('b:' . s:filetype_to_variables[&filetype][0])
         return
     endif
 
-    let l:flag_filepath = ''
-    let l:flags = ''
-    for flag_file in s:flag_files
-        let l:flag_filepath = findfile(flag_file, '.;')
+    let l:flag_list = []
+    for l:flag_file in s:flag_files
+        let l:flag_filepath = findfile(l:flag_file, '.;')
         if !empty(l:flag_filepath)
-            let l:flags = join(readfile(l:flag_filepath), ' ')
+            let l:flag_list = readfile(l:flag_filepath)
             break
         endif
     endfor
-    if empty(l:flags)
+    if empty(l:flag_list)
         return
     endif
-    for var_name in s:filetype_to_variables[&ft]
-        execute 'let ' . var_name . ' = "' . l:flags . '"'
+    for l:var_name in s:filetype_to_variables[&filetype]
+        let l:current_flag_list = []
+        if has_key(s:option_filter, l:var_name)
+            let l:current_flag_list = []
+            for l:flag in l:flag_list
+                for l:option in s:option_filter[l:var_name]
+                    if l:flag =~# ('^' . l:option)
+                        call add(l:current_flag_list, l:flag)
+                        break
+                    endif
+                endfor
+            endfor
+        else
+            let l:current_flag_list = l:flag_list
+        endif
+        if exists('g:' . l:var_name)
+            execute 'let b:' . l:var_name . ' = g:' . l:var_name
+        else
+            execute 'let b:' . l:var_name . ' = ""'
+        endif
+        execute 'let l:is_var_empty = empty(b:' . l:var_name . ')'
+        if !l:is_var_empty
+            execute 'let b:' . l:var_name . ' .= " "'
+        endif
+        execute 'let b:' . l:var_name . ' .= "' . join(l:current_flag_list, ' ') . '"'
     endfor
 
     ALELint
