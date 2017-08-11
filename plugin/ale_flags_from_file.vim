@@ -64,4 +64,5 @@ endfunction
 augroup ale_flags_from_file
     autocmd!
     autocmd BufEnter * call s:load_flags()
+    autocmd Filetype * call s:load_flags()
 augroup END
