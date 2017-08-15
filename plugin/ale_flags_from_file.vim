@@ -1,7 +1,7 @@
-if exists('g:ale_flags_from_file') && g:ale_flags_from_file
+if exists('g:ale_flags_from_file_loaded') && g:ale_flags_from_file_loaded
   finish
 endif
-let g:ale_flags_from_file = 1
+let g:ale_flags_from_file_loaded = 1
 
 let s:flag_files = ['.color_coded']
 let s:filetype_to_variables = {
