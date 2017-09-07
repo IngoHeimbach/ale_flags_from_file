@@ -3,7 +3,7 @@ if exists('g:ale_flags_from_file_loaded') && g:ale_flags_from_file_loaded
 endif
 let g:ale_flags_from_file_loaded = 1
 
-let s:flag_files = ['.color_coded']
+let s:flag_files = ['.compile_flags']
 let s:filetype_to_variables = {
     \   'c':   ['ale_c_clang_options', 'ale_c_clangtidy_options', 'ale_c_cppcheck_options'],
     \   'cpp': ['ale_cpp_clang_options', 'ale_cpp_clangtidy_options', 'ale_cpp_cppcheck_options']
