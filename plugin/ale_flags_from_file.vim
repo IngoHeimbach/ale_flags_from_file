@@ -5,12 +5,17 @@ let g:ale_flags_from_file_loaded = 1
 
 let s:flag_files = {
     \   'standard': ['.compile_flags'],
+    \   'unix':  ['.unix_compile_flags'],
     \   'windows':  ['.windows_compile_flags']
     \ }
 let s:filetype_to_variables = {
     \   'standard': {
         \   'c':   ['ale_c_clang_options', 'ale_c_clangtidy_options', 'ale_c_cppcheck_options'],
         \   'cpp': ['ale_cpp_clang_options', 'ale_cpp_clangtidy_options', 'ale_cpp_cppcheck_options']
+        \ },
+    \   'unix': {
+        \   'c':   ['ale_c_clangunix_options'],
+        \   'cpp': ['ale_cpp_clangunix_options']
         \ },
     \   'windows': {
         \   'c':   ['ale_c_clangwin_options'],
@@ -22,8 +27,16 @@ let s:option_filter = {
     \   'ale_cpp_cppcheck_options': ['-D', '-I']
     \ }
 
+function! s:c_clangunix_enable()
+    let b:ale_c_clangunix_enable = 1
+endfunction
+
 function! s:c_clangwin_enable()
     let b:ale_c_clangwin_enable = 1
+endfunction
+
+function! s:cpp_clangunix_enable()
+    let b:ale_cpp_clangunix_enable = 1
 endfunction
 
 function! s:cpp_clangwin_enable()
@@ -31,7 +44,9 @@ function! s:cpp_clangwin_enable()
 endfunction
 
 let s:variable_to_action = {
+    \   'ale_c_clangunix_options':   function('s:c_clangunix_enable'),
     \   'ale_c_clangwin_options':   function('s:c_clangwin_enable'),
+    \   'ale_cpp_clangunix_options': function('s:cpp_clangunix_enable'),
     \   'ale_cpp_clangwin_options': function('s:cpp_clangwin_enable')
     \ }
 
