@@ -10,8 +10,8 @@ let s:flag_files = {
     \ }
 let s:filetype_to_variables = {
     \   'standard': {
-        \   'c': ['ale_c_clang_options', 'ale_c_clangtidy_options', 'ale_c_cppcheck_options', 'ale_c_oclint_compileflags'],
-        \   'cpp': ['ale_cpp_clang_options', 'ale_cpp_clangtidy_options', 'ale_cpp_cppcheck_options', 'ale_cpp_oclint_compileflags'],
+        \   'c': ['ale_c_clang_options', 'ale_c_clangtidy_options', 'ale_c_cppcheck_options', 'ale_c_oclint_compileflags', 'ale_c_mingw_options'],
+        \   'cpp': ['ale_cpp_clang_options', 'ale_cpp_clangtidy_options', 'ale_cpp_cppcheck_options', 'ale_cpp_oclint_compileflags', 'ale_cpp_mingw_options'],
         \   'fortran': ['ale_fortran_ifort_options']
         \ },
     \   'unix': {
