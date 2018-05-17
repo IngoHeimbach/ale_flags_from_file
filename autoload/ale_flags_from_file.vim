@@ -18,7 +18,11 @@ let s:filetype_to_variables = {
         \   'cpp': ['ale_cpp_clangwin_options']
         \ }
     \ }
-let s:option_filter = {
+let s:option_blacklist = {
+    \   'ale_c_oclint_compileflags': ['-std'],
+    \   'ale_cpp_oclint_compileflags': ['-std']
+    \ }
+let s:option_whitelist = {
     \   'ale_c_cppcheck_options': ['-D', '-I'],
     \   'ale_cpp_cppcheck_options': ['-D', '-I']
     \ }
@@ -63,11 +67,21 @@ endfunction
 function! s:set_flags(flag_list, variables)
     for l:var_name in a:variables
         let l:current_flag_list = []
-        if has_key(s:option_filter, l:var_name)
+        if has_key(s:option_whitelist, l:var_name)
             let l:current_flag_list = []
             for l:flag in a:flag_list
-                for l:option in s:option_filter[l:var_name]
+                for l:option in s:option_whitelist[l:var_name]
                     if l:flag =~# ('^' . l:option)
+                        call add(l:current_flag_list, l:flag)
+                        break
+                    endif
+                endfor
+            endfor
+        elseif has_key(s:option_blacklist, l:var_name)
+            let l:current_flag_list = []
+            for l:flag in a:flag_list
+                for l:option in s:option_blacklist[l:var_name]
+                    if l:flag !~# ('^' . l:option)
                         call add(l:current_flag_list, l:flag)
                         break
                     endif
